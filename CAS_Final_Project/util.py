@@ -10,8 +10,8 @@ def get_global_var():
     MAX_WIDTH = 128
 
     #I found plenty of diferent label file formats.These 3 Formats I tested quite a lot
-    IMG_FOLDER = 'G:/My Drive/development/datasets/OCR/MNIST_words_cropped/images/'
-    LABELS_File = 'G:/My Drive/development/datasets/OCR/MNIST_words_cropped/annotations.json'
+    IMG_FOLDER = '/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/images/'
+    LABELS_File = '/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/annotations.json'
     #IMG_FOLDER = '/content/tr_synth_100K_cropped/images/'
     #LABELS_File = '/content/tr_synth_100K_cropped/annotations.txt'
     #IMG_FOLDER = '/content/tr_synth_100K_cropped/images/'
@@ -137,3 +137,30 @@ def delete_key_values_with_too_small_aspect_ratio(key_val):
             print("removed image,    :" + str(key_val[index,0]))
 
     return key_val[clean_matrix]
+
+
+def process_single_sample(img_path, labels_padded, len_labels_padded, len_labels_not_padded):
+    # 1. Read image
+    img = tf.io.read_file(img_path)
+    # 2. Decode and convert to grayscale
+    img = tf.io.decode_png(img, channels=1)
+    # 3. Convert to float32 in [0, 1] range
+    img = tf.image.convert_image_dtype(img, tf.float32)
+    # 4. Resize to the desired size. its important for the resize_with_pad funktion. When picture is way bigge with strange aspect ratio ist rans into an error
+    img = tf.image.resize(img, [MAX_HIGHT, MAX_WIDTH], preserve_aspect_ratio= True)
+    # 5. Pad the image to MAX_HIGHT and MAX_WIDTH
+    img = tf.image.resize_with_pad(img, target_height=MAX_HIGHT, target_width=MAX_WIDTH)
+    # 6. Transpose the image because we want the time
+    img = tf.transpose(img, perm=[1, 0, 2])
+    # 7. Return a dict as our model is expecting two inputs
+
+    labels_padded = tf.convert_to_tensor(labels_padded, dtype="int32")
+    len_labels_padded = tf.convert_to_tensor([len_labels_padded], dtype="int32")
+    len_labels_not_padded = tf.convert_to_tensor([len_labels_not_padded], dtype="int32")
+    #label = tf.keras.utils.pad_sequences(label, maxlen=MAX_STR_LEN)
+    #return {"input": img, "gtruth_labels": label, "input_length": img, "label_length": label}
+    #return img, labels_padded, len_labels_padded,len_labels_not_padded, [0]
+    return {"input_data": img, "input_label": labels_padded, "input_length": len_labels_padded, "label_length":len_labels_not_padded}
+
+
+
