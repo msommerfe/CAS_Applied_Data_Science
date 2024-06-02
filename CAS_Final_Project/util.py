@@ -12,25 +12,21 @@ def get_global_var():
     #I found plenty of diferent label file formats.These 3 Formats I tested quite a lot
     IMG_FOLDER = '/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/images/'
     LABELS_File = '/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/annotations.json'
-    #IMG_FOLDER = '/content/tr_synth_100K_cropped/images/'
-    #LABELS_File = '/content/tr_synth_100K_cropped/annotations.txt'
-    #IMG_FOLDER = '/content/tr_synth_100K_cropped/images/'
-    #LABELS_File = '/content/SVHN_annotations.out'
+
 
     #Dont use # in the alphabet. if you need you need to change the fillup char
-    #ALPHABETS = '#'+ string.digits + string.ascii_letters + '!?.-()+ '
+    ALPHABETS = '#'+ string.digits + string.ascii_letters + '!?.-()+ '
     ALPHABETS = '#'+ string.digits + string.ascii_uppercase + '- '
 
-    MAX_STR_LEN = 24 # max length of input labels
+    MAX_STR_LEN = 24 # max length of input labels ATTENTION: TF will add TO char. So it you want to allow Labels of 7 char. you need to set MAX_STR_LEN to 9
     NUM_OF_CHARACTERS = len(ALPHABETS) + 1 # +1 for ctc pseudo blank
-    NUM_OF_TIMESTAMPS = 24 # max length of predicted labels
-    BATCH_SIZE = 32
+    NUM_OF_TIMESTAMPS = 20 # max length of predicted labels
+    BATCH_SIZE = 128
     return MAX_HIGHT, MAX_WIDTH, IMG_FOLDER, LABELS_File, ALPHABETS, MAX_STR_LEN, NUM_OF_CHARACTERS, NUM_OF_TIMESTAMPS, BATCH_SIZE
 
 MAX_HIGHT, MAX_WIDTH, IMG_FOLDER, LABELS_File, ALPHABETS, MAX_STR_LEN, NUM_OF_CHARACTERS, NUM_OF_TIMESTAMPS, BATCH_SIZE = get_global_var()
 
-def make_total_path(imgName):
-    return IMG_FOLDER + imgName
+
 
 
 ### Converting Chars to nums is better for ML
@@ -81,7 +77,7 @@ def import_txt_csv_label_file(path = LABELS_File):
 
 
 #Reading the key values out (x und y) of a spezific *.out file ("Image_filename that includes the labels" "text on Image")
-def import_txt_csv_label_file(path = LABELS_File):
+def import_out_label_file(path = LABELS_File):
     with open(LABELS_File, "r") as f:
         data = list(csv.reader(f, delimiter=" "))
 
@@ -94,12 +90,14 @@ def import_txt_csv_label_file(path = LABELS_File):
 #print(keyVal.shape)
 #print(keyVal)
 
+def make_total_path(imgName, path = IMG_FOLDER):
+    return path + imgName
 
 #make total path instead of just image name
-def make_total_path_for_all_image_names(keyVal):
+def make_total_path_for_all_image_names(keyVal,path = IMG_FOLDER):
     new_key_val = []
 
-    path = np.array([make_total_path(imgName) for imgName in keyVal[:,0]])
+    path = np.array([make_total_path(imgName, path) for imgName in keyVal[:,0]])
     for index in range(len(path)):
         new_key_val.append([path[index], keyVal[index,1]])
 
@@ -119,6 +117,25 @@ def delete_key_values_that_not_in_alphabet(key_val):
         i = i+1
 
     return key_val[clean_matrix]
+
+
+def delete_key_values_that_have_a_too_long_label(key_val):
+    i = 0
+    clean_matrix = np.full((len(key_val)), True)
+    for item in key_val:
+        if len(item[1]) > MAX_STR_LEN-2:
+            clean_matrix[i] = False
+            print("deleted keyVal: " + str(item[1]))
+        else:
+            clean_matrix[i] = True
+        i = i+1
+
+    return key_val[clean_matrix]
+
+mykeyval= np.array([['/mnt/g/My Drive/development/datasets/OCR/tr_synth_100K_cropped/images/00007066.jpg','government-commissioned1'],
+                    ['/mnt/g/My Drive/development/datasets/OCR/tr_synth_100K_cropped/images/00007067.jpg','h5555555555555555555er'],
+                    ['/mnt/g/My Drive/development/datasets/OCR/tr_synth_100K_cropped/images/00007068.jpg','<p>']])
+print(delete_key_values_that_have_a_too_long_label(mykeyval))
 
 #Delete all Images with a tooo small aspect ratio, because the throughing an error
 def delete_key_values_with_too_small_aspect_ratio(key_val):

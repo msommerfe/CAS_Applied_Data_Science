@@ -1,12 +1,12 @@
 import json
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import tensorflow as tf
-from PIL import Image
+#from PIL import Image
 #import cv2
 import os
-from sklearn.model_selection import train_test_split
+#from sklearn.model_selection import train_test_split
 import string
 import csv
 import util
@@ -20,14 +20,6 @@ from keras.layers import Input, Conv2D, MaxPooling2D, Reshape, Bidirectional, LS
 from keras.optimizers import Adam
 tf.config.run_functions_eagerly(True)
 
-
-from tensorflow.python.client import device_lib
-print(device_lib.list_local_devices())
-print(tf.sysconfig.get_build_info())
-
-print(tf.test.is_built_with_cuda())
-
-tf.config.list_physical_devices('GPU')
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 
@@ -35,20 +27,35 @@ print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 MAX_HIGHT, MAX_WIDTH, IMG_FOLDER, LABELS_File, ALPHABETS, MAX_STR_LEN, NUM_OF_CHARACTERS, NUM_OF_TIMESTAMPS, BATCH_SIZE = util.get_global_var()
 
-keyVal = util.import_json_label_file()[:8000]
-print(keyVal)
+IMG_FOLDER = '/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/images/'
 
-#make total path instead of just image name
-key_val = util.make_total_path_for_all_image_names(keyVal)
-print(key_val)
+
+keyValMNIST = util.import_json_label_file(path='/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/annotations.json')
+keyValMNIST = util.make_total_path_for_all_image_names(keyValMNIST, path= '/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/images/')
+print(keyValMNIST.shape)
+
+
+
+
+keyVal100k = util.import_txt_csv_label_file(path = "/mnt/g/My Drive/development/datasets/OCR/tr_synth_100K_cropped/annotations.txt")
+keyVal100k = util.make_total_path_for_all_image_names(keyVal100k, path= '/mnt/g/My Drive/development/datasets/OCR/tr_synth_100K_cropped/images/')
+print(keyVal100k.shape)
+print(keyVal100k)
+
+
+key_val = np.concatenate((keyVal100k, keyValMNIST), axis=0)
+np.random.shuffle(key_val)
+print(key_val.shape)
 
 #Delete all values that are not in the alphabet
 key_val = util.delete_key_values_that_not_in_alphabet(key_val)
 print(key_val[0,0])
+print(key_val.shape)
+
+final_key_val= util.delete_key_values_that_have_a_too_long_label(key_val)
 
 
 final_key_val = util.delete_key_values_with_too_small_aspect_ratio(key_val)
-
 print(final_key_val.shape)
 
 
