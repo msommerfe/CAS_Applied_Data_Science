@@ -145,7 +145,7 @@ def delete_key_values_with_too_small_aspect_ratio(key_val):
         img = tf.io.read_file(key_val[index,0])
         img = tf.io.decode_png(img, channels=1)
         img = tf.image.convert_image_dtype(img, tf.float32)
-        #print(index)
+        print(index)
         try:
             img = tf.image.resize(img, [MAX_HIGHT, MAX_WIDTH], preserve_aspect_ratio= True)
             clean_matrix[index] = True

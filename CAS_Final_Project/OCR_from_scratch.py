@@ -1,12 +1,12 @@
 import json
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import tensorflow as tf
 #from PIL import Image
 #import cv2
 import os
-#from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split
 import string
 import csv
 import util
@@ -37,7 +37,7 @@ print(keyValMNIST.shape)
 
 
 
-keyVal100k = util.import_txt_csv_label_file(path = "/mnt/g/My Drive/development/datasets/OCR/tr_synth_100K_cropped/annotations.txt")
+keyVal100k = util.import_txt_csv_label_file(path = "/mnt/g/My Drive/development/datasets/OCR/tr_synth_100K_cropped/annotations.txt")[:1]
 keyVal100k = util.make_total_path_for_all_image_names(keyVal100k, path= '/mnt/g/My Drive/development/datasets/OCR/tr_synth_100K_cropped/images/')
 print(keyVal100k.shape)
 print(keyVal100k)
