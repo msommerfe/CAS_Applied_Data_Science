@@ -6,8 +6,8 @@ import numpy as np
 import csv
 
 def get_global_var():
-    MAX_HIGHT = 64
-    MAX_WIDTH = 128
+    MAX_HIGHT = 128
+    MAX_WIDTH = 265
 
     #I found plenty of diferent label file formats.These 3 Formats I tested quite a lot
     IMG_FOLDER = '/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/images/'
@@ -15,8 +15,9 @@ def get_global_var():
 
 
     #Dont use # in the alphabet. if you need you need to change the fillup char
-    ALPHABETS = '#'+ string.digits + string.ascii_letters + '!?.-()+ '
-    ALPHABETS = '#'+ string.digits + string.ascii_uppercase + '- '
+    ALPHABETS = ' ' + string.digits + string.ascii_letters + '!?.-()+'
+    #ALPHABETS = ' ' + string.digits + string.ascii_uppercase + '-'
+    #ALPHABETS = ' ' + string.digits
 
     MAX_STR_LEN = 24 # max length of input labels ATTENTION: TF will add TO char. So it you want to allow Labels of 7 char. you need to set MAX_STR_LEN to 9
     NUM_OF_CHARACTERS = len(ALPHABETS) + 1 # +1 for ctc pseudo blank
@@ -35,7 +36,7 @@ def label_to_num(label, padding = True):
     for ch in label:
         #This line assignes all characters that are not in the Alphabet a -1. It means there is no character. An alternative could be assignt it to a pseudo character that represents all characters, that are not in the alphabet
         #I use a pseudo character that represents all characters, that are not in the alphabet
-        label_num.append(ALPHABETS.find(ch) if ALPHABETS.find(ch)!=-1 else ALPHABETS.find('#'))
+        label_num.append(ALPHABETS.find(ch) if ALPHABETS.find(ch)!=-1 else ALPHABETS.find(' '))
 
     if padding == True:
         return_label = tf.keras.utils.pad_sequences([label_num], maxlen= MAX_STR_LEN, value= -1, padding = "post")
@@ -51,8 +52,8 @@ def num_to_label(num):
         else:
             ret+=ALPHABETS[ch]
     return ret
-#print(label_to_num("aA01"))
-#num_to_label(label_to_num("aA01"))
+print(label_to_num("aA01"))
+print(num_to_label(label_to_num("aA01")))
 
 
 #Reading the key values out (x und y) of a json {Image_filename, "test on Image"}
@@ -66,7 +67,7 @@ def import_json_label_file(path = LABELS_File):
 
 #Reading the key values out (x und y) of a csv / txt ("Image_filename" "text on Image")
 def import_txt_csv_label_file(path = LABELS_File):
-    with open(path, "r") as f:
+    with open(path, "r", encoding='utf-8-sig') as f:
         data = list(csv.reader(f, delimiter=" "))
     return np.array(data)
 
@@ -177,7 +178,7 @@ def process_single_sample(img_path, labels_padded, len_labels_padded, len_labels
     #label = tf.keras.utils.pad_sequences(label, maxlen=MAX_STR_LEN)
     #return {"input": img, "gtruth_labels": label, "input_length": img, "label_length": label}
     #return img, labels_padded, len_labels_padded,len_labels_not_padded, [0]
-    return {"input_data": img, "input_label": labels_padded, "input_length": len_labels_padded, "label_length":len_labels_not_padded}
+    return {"image": img, "label": labels_padded, "input_length": len_labels_padded, "label_length":len_labels_not_padded}
 
 
 
