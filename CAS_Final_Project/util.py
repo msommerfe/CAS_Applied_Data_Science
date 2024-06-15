@@ -22,7 +22,7 @@ def get_global_var():
     MAX_STR_LEN = 24 # max length of input labels ATTENTION: TF will add TO char. So it you want to allow Labels of 7 char. you need to set MAX_STR_LEN to 9
     NUM_OF_CHARACTERS = len(ALPHABETS) + 1 # +1 for ctc pseudo blank
     NUM_OF_TIMESTAMPS = 20 # max length of predicted labels
-    BATCH_SIZE = 128
+    BATCH_SIZE = 256
     return MAX_HIGHT, MAX_WIDTH, IMG_FOLDER, LABELS_File, ALPHABETS, MAX_STR_LEN, NUM_OF_CHARACTERS, NUM_OF_TIMESTAMPS, BATCH_SIZE
 
 MAX_HIGHT, MAX_WIDTH, IMG_FOLDER, LABELS_File, ALPHABETS, MAX_STR_LEN, NUM_OF_CHARACTERS, NUM_OF_TIMESTAMPS, BATCH_SIZE = get_global_var()
