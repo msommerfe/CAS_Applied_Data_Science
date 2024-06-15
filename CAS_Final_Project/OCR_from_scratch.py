@@ -22,6 +22,7 @@ from keras.layers import Input, Conv2D, MaxPooling2D, Reshape, Bidirectional, LS
 from keras.optimizers import Adam
 tf.config.run_functions_eagerly(True)
 
+
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 
@@ -36,11 +37,6 @@ keyValMNIST = util.import_json_label_file(path='/mnt/g/My Drive/development/data
 keyValMNIST = util.make_total_path_for_all_image_names(keyValMNIST, path= '/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/images/')
 print(keyValMNIST.shape)
 print(keyValMNIST)
-
-keyValcanon = util.import_txt_csv_label_file(path='/mnt/g/My Drive/development/datasets/OCR/canon_cropped/annotations.txt')
-keyValcanon = util.make_total_path_for_all_image_names(keyValcanon, path= '/mnt/g/My Drive/development/datasets/OCR/canon_cropped/images/')
-print(keyValcanon.shape)
-print(keyValcanon)
 
 
 keyValch4 = util.import_txt_csv_label_file(path='/mnt/g/My Drive/development/datasets/OCR/ch4_cropped/annotations.txt')
@@ -58,10 +54,16 @@ keyVal100k = util.make_total_path_for_all_image_names(keyVal100k, path= '/mnt/g/
 print(keyVal100k.shape)
 print(keyVal100k)
 
+keyValIdVehic = util.import_txt_csv_label_file(path = "/mnt/g/My Drive/development/datasets/OCR/Ind_vehicle_number/annotations.txt")
+keyValIdVehic = util.make_total_path_for_all_image_names(keyValIdVehic, path= '/mnt/g/My Drive/development/datasets/OCR/Ind_vehicle_number/images/')
+print(keyValIdVehic.shape)
+print(keyValIdVehic)
 
-key_val = np.concatenate((keyValMNIST, keyValcanon,  keyValch4, keyValBd,  keyVal100k ), axis=0)
-key_val = keyVal100k[:300]
 
+key_val = np.concatenate((keyValMNIST,  keyValch4, keyValBd,  keyVal100k, keyValIdVehic ), axis=0)
+
+#key_val = keyValIdVehic
+#shuffles the keyVals
 np.random.shuffle(key_val)
 print(key_val.shape)
 
@@ -320,8 +322,9 @@ callbacks_list = [checkpoint,
                   EarlyStopping(patience=8, verbose=1,monitor='val_loss', restore_best_weights=True)]
 print(5)
 # Train the model
+model.load_weights('/mnt/c/dev/tmp20240609/C_LSTM_first_Long_run_on_100k.best.weights.h5')
 history = model.fit(train_dataset,
-                    epochs=1,
+                    epochs=100,
                     validation_data=validation_dataset,
                     verbose=1,
                     callbacks=callbacks_list,

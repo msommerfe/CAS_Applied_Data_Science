@@ -73,6 +73,10 @@ ssh root@localhost -p 2222
 ![img_1.png](img_1.png)
 ![img.png](img.png)
 
+# what to do after restart whole system
+open ubuntu
+docker ps --> check if container are running
+docker run --gpus all -v/mnt:/mnt -p 2222:22 mytfimage
 
 # Some usefull commands
 
@@ -94,6 +98,7 @@ docker rm <container_id> --> hard delete of contaienr
 docker ps
 docker ps -a
 docker images
+docker container prune -f --> deletes all stopped containers
 
 
 
