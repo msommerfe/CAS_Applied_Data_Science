@@ -1,7 +1,8 @@
 FROM tensorflow/tensorflow:latest-gpu
 RUN pip install matplotlib
-RUN pip install matplotlib
 RUN pip install scikit-learn
+RUN pip install ultralytics
+RUN pip install opencv-python-headless
 RUN echo 'Hallo aus dem Image'
 
 RUN apt-get update && apt-get install -y openssh-server

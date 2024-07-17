@@ -16,7 +16,7 @@ def get_global_var():
 
     #Dont use # in the alphabet. if you need you need to change the fillup char
     ALPHABETS = ' ' + string.digits + string.ascii_letters + '!?.-()+'
-    #ALPHABETS = ' ' + string.digits + string.ascii_uppercase + '-'
+    ALPHABETS = ' ' + string.digits + string.ascii_uppercase + '-'
     #ALPHABETS = ' ' + string.digits
 
     MAX_STR_LEN = 24 # max length of input labels ATTENTION: TF will add TO char. So it you want to allow Labels of 7 char. you need to set MAX_STR_LEN to 9

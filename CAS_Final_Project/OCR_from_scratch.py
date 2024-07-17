@@ -308,7 +308,7 @@ def build_model():
 print(1)
 model = build_model()
 print(2)
-file_path_weights = '/mnt/c/dev/tmp20240609/C_LSTM_best.weights.h5'
+file_path_weights = '/mnt/c/dev/tmp20240710/C_LSTM_best.weights.h5'
 print(3)
 checkpoint = ModelCheckpoint(filepath=file_path_weights,
                              monitor='val_loss',
@@ -322,7 +322,7 @@ callbacks_list = [checkpoint,
                   EarlyStopping(patience=8, verbose=1,monitor='val_loss', restore_best_weights=True)]
 print(5)
 # Train the model
-model.load_weights('/mnt/c/dev/tmp20240609/C_LSTM_first_Long_run_on_100k.best.weights.h5')
+#model.load_weights('/mnt/c/dev/tmp20240609/C_LSTM_first_Long_run_on_100k.best.weights.h5')
 history = model.fit(train_dataset,
                     epochs=100,
                     validation_data=validation_dataset,
@@ -334,7 +334,7 @@ history = model.fit(train_dataset,
 print(6)
 
 
-model.load_weights('/mnt/c/dev/tmp20240609/C_LSTM_first_Long_run_on_100k.best.weights.h5')
+#model.load_weights('/mnt/c/dev/tmp20240609/C_LSTM_first_Long_run_on_100k.best.weights.h5')
 
 
 

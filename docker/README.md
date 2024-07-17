@@ -40,6 +40,9 @@ docker run --gpus all -it tensorflow/tensorflow:latest-gpu bash --> That launche
 /# exit
 
 ## 5 Create Dockerfile 
+## When you want to use Ultralytics ypu need to
+## RUN pip install ultralytics
+## RUN pip install opencv-python-headless
 
 FROM tensorflow/tensorflow:latest-gpu
 RUN pip install matplotlib
@@ -76,7 +79,10 @@ ssh root@localhost -p 2222
 # what to do after restart whole system
 open ubuntu
 docker ps --> check if container are running
+docker run --gpus all -v/mnt:/mnt -p 2222:22 --shm-size=2gb mytfimage ---> to use 2gig memory
 docker run --gpus all -v/mnt:/mnt -p 2222:22 mytfimage
+
+--> 9 connect your IDE via SSH to Docker and use it as python interpreter
 
 # Some usefull commands
 
@@ -99,6 +105,8 @@ docker ps
 docker ps -a
 docker images
 docker container prune -f --> deletes all stopped containers
+docker exec -it <container_id> bash --> enters the conteiner
+docker inspect <container_id> | grep -i shm --> shows allocated memory
 
 
 

@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="root@localhost:2222 password (6)" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="root@localhost:2222 password (12)" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="root@localhost:2222 password">
         <serverdata>
           <mappings>
             <mapping deploy="/tmp/pycharm_project_665" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="root@localhost:2222 password (10)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_349" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="root@localhost:2222 password (11)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_483" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="root@localhost:2222 password (12)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_498" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
@@ -41,6 +62,27 @@
         <serverdata>
           <mappings>
             <mapping deploy="/tmp/pycharm_project_910" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="root@localhost:2222 password (7)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_237" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="root@localhost:2222 password (8)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_82" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="root@localhost:2222 password (9)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_607" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
