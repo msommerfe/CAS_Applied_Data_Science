@@ -145,7 +145,7 @@ def delete_key_values_with_too_small_aspect_ratio(key_val):
         img = tf.io.read_file(key_val[index,0])
         img = tf.io.decode_png(img, channels=1)
         img = tf.image.convert_image_dtype(img, tf.float32)
-        #print(index)
+        print(index)
         try:
             img = tf.image.resize(img, [MAX_HIGHT, MAX_WIDTH], preserve_aspect_ratio= True)
             clean_matrix[index] = True
@@ -177,7 +177,7 @@ def process_single_sample(img_path, labels_padded, len_labels_padded, len_labels
     #label = tf.keras.utils.pad_sequences(label, maxlen=MAX_STR_LEN)
     #return {"input": img, "gtruth_labels": label, "input_length": img, "label_length": label}
     #return img, labels_padded, len_labels_padded,len_labels_not_padded, [0]
-    return {"image": img, "label": labels_padded, "input_length": len_labels_padded, "label_length":len_labels_not_padded}
+    return {"input_data": img, "input_label": labels_padded, "input_length": len_labels_padded, "label_length":len_labels_not_padded}
 
 
 

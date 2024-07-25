@@ -73,8 +73,8 @@ print(key_val.shape)
 final_key_val= util.delete_key_values_that_have_a_too_long_label(key_val)
 
 
-#final_key_val = util.delete_key_values_with_too_small_aspect_ratio(key_val)
-print("Totals, Number of used images for training and validation"+   str(final_key_val.shape))
+final_key_val = util.delete_key_values_with_too_small_aspect_ratio(key_val)
+print(final_key_val.shape)
 
 
  #Convert key Value (x = imagePpath y = label) to np array
@@ -140,8 +140,8 @@ validation_dataset = (
 
 _, ax = plt.subplots(4, 4, figsize=(10, 5))
 for batch in train_dataset.take(1):
-    images = batch["image"]
-    labels = batch["label"]
+    images = batch["input_data"]
+    labels = batch["input_label"]
     len_labels_padded = batch["input_length"]
     for i in range(16):
         img = (images[i] * 255).numpy().astype("uint8")
@@ -162,8 +162,8 @@ class PlotPredictions(tf.keras.callbacks.Callback):
         super(PlotPredictions, self).__init__()
 
         batch = validation_dataset.take(1)
-        self.batch_images = list(batch.as_numpy_iterator())[0]["image"]
-        self.batch_labels = list(batch.as_numpy_iterator())[0]["label"]
+        self.batch_images = list(batch.as_numpy_iterator())[0]["input_data"]
+        self.batch_labels = list(batch.as_numpy_iterator())[0]["input_label"]
 
     def plot_predictions(self, epoch):
 
@@ -228,9 +228,9 @@ class CTCLayer(layers.Layer):
 def build_model():
     # Inputs to the model
     input_img = layers.Input(shape=(MAX_WIDTH, MAX_HIGHT, 1),
-                            name="image",
+                            name='input_data',
                             dtype='float32')
-    labels = layers.Input(name="label", shape=[MAX_STR_LEN], dtype='float32')
+    labels = layers.Input(name='input_label', shape=[MAX_STR_LEN], dtype='float32')
     input_length = layers.Input(name='input_length', shape=[1], dtype='int64')
     label_length = layers.Input(name='label_length', shape=[1], dtype='int64')
 
@@ -395,7 +395,7 @@ def decode_batch_predictions(pred):
 imgT = []
 _, ax = plt.subplots(4, 4, figsize=(10, 5))
 for batch in validation_dataset.take(1):
-    images = batch["image"]
+    images = batch["input_data"]
 
     pred = prediction_model.predict(images)
     pred = pred[:, :-2]
@@ -403,7 +403,7 @@ for batch in validation_dataset.take(1):
     results = keras.backend.ctc_decode(pred,
                                         input_length=input_len,
                                         greedy=True)[0][0]
-    labels = batch["label"]
+    labels = batch["input_label"]
     len_labels_padded = batch["input_length"]
     for i in range(16):
         img = (images[i] * 255).numpy().astype("uint8")
