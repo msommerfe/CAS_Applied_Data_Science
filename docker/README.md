@@ -101,9 +101,12 @@ ssh root@localhost -p 2222
 docker ps -q | xargs docker stop --> Stops all container
 docker stop <container_id> --> stops single docker
 docker rm <container_id> --> hard delete of contaienr
+docker rm $(docker ps -a -q) --> delete all docker containers
+docker rm $(docker kill $(docker ps -aq)) --> Kills all container and removes them
 docker ps
 docker ps -a
 docker images
+docker rmi image_name:tag --> deletes Image
 docker container prune -f --> deletes all stopped containers
 docker exec -it <container_id> bash --> enters the conteiner
 docker inspect <container_id> | grep -i shm --> shows allocated memory

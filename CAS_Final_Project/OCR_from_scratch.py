@@ -26,42 +26,40 @@ tf.config.run_functions_eagerly(True)
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 
-
-
 MAX_HIGHT, MAX_WIDTH, IMG_FOLDER, LABELS_File, ALPHABETS, MAX_STR_LEN, NUM_OF_CHARACTERS, NUM_OF_TIMESTAMPS, BATCH_SIZE = util.get_global_var()
 
 IMG_FOLDER = '/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/images/'
 
 
-keyValMNIST = util.import_json_label_file(path='/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/annotations.json')
-keyValMNIST = util.make_total_path_for_all_image_names(keyValMNIST, path= '/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/images/')
+keyValMNIST = util.import_json_label_file(path='/mnt/c/dev/datasets/OCR/MNIST_words_cropped/annotations.json')
+keyValMNIST = util.make_total_path_for_all_image_names(keyValMNIST, path= '/mnt/c/dev/datasets/OCR/MNIST_words_cropped/images/')
 print(keyValMNIST.shape)
 print(keyValMNIST)
 
 
-keyValch4 = util.import_txt_csv_label_file(path='/mnt/g/My Drive/development/datasets/OCR/ch4_cropped/annotations.txt')
-keyValch4 = util.make_total_path_for_all_image_names(keyValch4, path= '/mnt/g/My Drive/development/datasets/OCR/ch4_cropped/images/')
+keyValch4 = util.import_txt_csv_label_file(path='/mnt/c/dev/datasets/OCR/ch4_cropped/annotations.txt')
+keyValch4 = util.make_total_path_for_all_image_names(keyValch4, path= '/mnt/c/dev/datasets/OCR/ch4_cropped/images/')
 print(keyValch4.shape)
 print(keyValch4)
 
-keyValBd = util.import_txt_csv_label_file(path='/mnt/g/My Drive/development/datasets/OCR/BornDigitalData/annotations.txt')
-keyValBd = util.make_total_path_for_all_image_names(keyValBd, path= '/mnt/g/My Drive/development/datasets/OCR/BornDigitalData/images/')
+keyValBd = util.import_txt_csv_label_file(path='/mnt/c/dev/datasets/OCR/BornDigitalData/annotations.txt')
+keyValBd = util.make_total_path_for_all_image_names(keyValBd, path= '/mnt/c/dev/datasets/OCR/BornDigitalData/images/')
 print(keyValBd.shape)
 print(keyValBd)
 
-keyVal100k = util.import_txt_csv_label_file(path = "/mnt/g/My Drive/development/datasets/OCR/tr_synth_100K_cropped/annotations.txt")
-keyVal100k = util.make_total_path_for_all_image_names(keyVal100k, path= '/mnt/g/My Drive/development/datasets/OCR/tr_synth_100K_cropped/images/')
+keyVal100k = util.import_txt_csv_label_file(path = "/mnt/c/dev/datasets/OCR/tr_synth_100K_cropped/annotations.txt")
+keyVal100k = util.make_total_path_for_all_image_names(keyVal100k, path= '/mnt/c/dev/datasets/OCR/tr_synth_100K_cropped/images/')
 print(keyVal100k.shape)
 print(keyVal100k)
 
-keyValIdVehic = util.import_txt_csv_label_file(path = "/mnt/g/My Drive/development/datasets/OCR/Ind_vehicle_number/annotations.txt")
-keyValIdVehic = util.make_total_path_for_all_image_names(keyValIdVehic, path= '/mnt/g/My Drive/development/datasets/OCR/Ind_vehicle_number/images/')
+keyValIdVehic = util.import_txt_csv_label_file(path = "/mnt/c/dev/datasets/OCR/Ind_vehicle_number/annotations.txt")
+keyValIdVehic = util.make_total_path_for_all_image_names(keyValIdVehic, path= '/mnt/c/dev/datasets/OCR/Ind_vehicle_number/images/')
 print(keyValIdVehic.shape)
 print(keyValIdVehic)
 
 
 key_val = np.concatenate((keyValMNIST,  keyValch4, keyValBd,  keyVal100k, keyValIdVehic ), axis=0)
-
+key_val = keyValIdVehic
 #key_val = keyValIdVehic
 #shuffles the keyVals
 np.random.shuffle(key_val)
