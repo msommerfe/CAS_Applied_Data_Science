@@ -1,3 +1,4 @@
+#better try to use FROM tensorflow/tensorflow:2.16.1-gpu --> https://hub.docker.com/r/tensorflow/tensorflow/tags/?page=2&page_size=&ordering=&name=
 FROM tensorflow/tensorflow:latest-gpu
 RUN pip install matplotlib
 RUN pip install scikit-learn

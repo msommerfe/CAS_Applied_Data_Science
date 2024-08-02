@@ -47,6 +47,8 @@ keyValBd = util.make_total_path_for_all_image_names(keyValBd, path= '/mnt/c/dev/
 print(keyValBd.shape)
 print(keyValBd)
 
+
+#Achtung: Folgender Eintrag in annotations scheint zum Fehler zu führen Check Why vermutlich zu lang 00000806.jpg government-commissioned
 keyVal100k = util.import_txt_csv_label_file(path = "/mnt/c/dev/datasets/OCR/tr_synth_100K_cropped/annotations.txt")
 keyVal100k = util.make_total_path_for_all_image_names(keyVal100k, path= '/mnt/c/dev/datasets/OCR/tr_synth_100K_cropped/images/')
 print(keyVal100k.shape)
@@ -57,12 +59,16 @@ keyValIdVehic = util.make_total_path_for_all_image_names(keyValIdVehic, path= '/
 print(keyValIdVehic.shape)
 print(keyValIdVehic)
 
+keyValSVHN = util.import_txt_csv_label_file(path = "/mnt/c/dev/datasets/OCR/SVHN_EXTRA/annotations.txt")[:5000]
+keyValSVHN = util.make_total_path_for_all_image_names(keyValSVHN, path= '/mnt/c/dev/datasets/OCR/SVHN_Train/images/')
+print(keyValSVHN.shape)
+print(keyValSVHN)
+
 
 key_val = np.concatenate((keyValMNIST,  keyValch4, keyValBd,  keyVal100k, keyValIdVehic ), axis=0)
-key_val = keyValIdVehic
-#key_val = keyValIdVehic
-#shuffles the keyVals
-np.random.shuffle(key_val)
+key_val = np.concatenate((keyValMNIST, keyValBd), axis=0)
+key_val = keyValMNIST
+#np.random.shuffle(key_val)
 print(key_val.shape)
 
 #Delete all values that are not in the alphabet
@@ -73,7 +79,7 @@ print(key_val.shape)
 final_key_val= util.delete_key_values_that_have_a_too_long_label(key_val)
 
 
-final_key_val = util.delete_key_values_with_too_small_aspect_ratio(key_val)
+final_key_val = util.delete_key_values_with_too_small_aspect_ratio(final_key_val)
 print(final_key_val.shape)
 
 
@@ -300,7 +306,6 @@ def build_model():
     model.compile(optimizer=adam)
     print(model.summary())
 
-
     return model
 
 print(1)
@@ -317,12 +322,12 @@ checkpoint = ModelCheckpoint(filepath=file_path_weights,
 print(4)
 callbacks_list = [checkpoint,
                   PlotPredictions(frequency=1),
-                  EarlyStopping(patience=8, verbose=1,monitor='val_loss', restore_best_weights=True)]
+                  EarlyStopping(patience=80, verbose=1,monitor='val_loss', restore_best_weights=True)]
 print(5)
 # Train the model
-#model.load_weights('/mnt/c/dev/tmp20240609/C_LSTM_first_Long_run_on_100k.best.weights.h5')
+model.load_weights('/mnt/c/dev/git/CAS_Applied_Data_Science/CAS_Final_Project/Weights/100k_batch256_alphaAll.weights.h5')
 history = model.fit(train_dataset,
-                    epochs=100,
+                    epochs=2500,
                     validation_data=validation_dataset,
                     verbose=1,
                     callbacks=callbacks_list,

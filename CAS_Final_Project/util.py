@@ -16,7 +16,7 @@ def get_global_var():
 
     #Dont use # in the alphabet. if you need you need to change the fillup char
     ALPHABETS = '#'+ string.digits + string.ascii_letters + '!?.-()+ '
-    ALPHABETS = '#'+ string.digits + string.ascii_uppercase + '- '
+    #ALPHABETS = '#'+ string.digits + string.ascii_uppercase + '- '
 
     MAX_STR_LEN = 24 # max length of input labels ATTENTION: TF will add TO char. So it you want to allow Labels of 7 char. you need to set MAX_STR_LEN to 9
     NUM_OF_CHARACTERS = len(ALPHABETS) + 1 # +1 for ctc pseudo blank
@@ -93,6 +93,8 @@ def import_out_label_file(path = LABELS_File):
 def make_total_path(imgName, path = IMG_FOLDER):
     return path + imgName
 
+
+
 #make total path instead of just image name
 def make_total_path_for_all_image_names(keyVal,path = IMG_FOLDER):
     new_key_val = []
@@ -101,6 +103,8 @@ def make_total_path_for_all_image_names(keyVal,path = IMG_FOLDER):
     for index in range(len(path)):
         new_key_val.append([path[index], keyVal[index,1]])
 
+    #@TODO
+    #: Before returning, Check if images really exists. If not delete entry in new_key_val
     return np.array(new_key_val)
 
 #Delete all values that are not in the alphabet
@@ -145,7 +149,7 @@ def delete_key_values_with_too_small_aspect_ratio(key_val):
         img = tf.io.read_file(key_val[index,0])
         img = tf.io.decode_png(img, channels=1)
         img = tf.image.convert_image_dtype(img, tf.float32)
-        print(index)
+        #print(index)
         try:
             img = tf.image.resize(img, [MAX_HIGHT, MAX_WIDTH], preserve_aspect_ratio= True)
             clean_matrix[index] = True
