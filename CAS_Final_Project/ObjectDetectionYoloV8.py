@@ -21,12 +21,12 @@ datasetYamlPath = workDir + 'dataset.yaml'
 directory_with_val_images = os.path.join(workDir, "validate/images")
 #directory_with_val_images = os.path.join(workDir, "all_pics")
 #pathBestWeights = os.path.join(workDir, "runs/longRun_240Epochs/detect/train/weights/best.pt")
-pathBestWeights = os.path.join(workDir, "runs/quite_good_608p/detect/train/weights/best.pt")
+pathBestWeights = '/mnt/c/dev/git/CAS_Applied_Data_Science/CAS_Final_Project/Weights/YoloV8/best.pt'
 
 
 def train_yolo_model():
     model = YOLO('yolov8m.pt')
-    results = model.train(data=datasetYamlPath, batch=16, epochs=2500, imgsz=928, patience=500)
+    results = model.train(data=datasetYamlPath, batch=32, epochs=2500, imgsz=928, patience=500)
     # copies the results from Ultra lytics. Need to adapt every time you create a new python interpreter
     shutil.copytree('/tmp/pycharm_project_94/CAS_Final_Project/runs', '/mnt/c/dev/tmp250724')
     return model

@@ -10,7 +10,6 @@ def get_global_var():
     MAX_WIDTH = 128
 
     #I found plenty of diferent label file formats.These 3 Formats I tested quite a lot
-    IMG_FOLDER = '/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/images/'
     LABELS_File = '/mnt/g/My Drive/development/datasets/OCR/MNIST_words_cropped/annotations.json'
 
 
@@ -22,9 +21,9 @@ def get_global_var():
     NUM_OF_CHARACTERS = len(ALPHABETS) + 1 # +1 for ctc pseudo blank
     NUM_OF_TIMESTAMPS = 20 # max length of predicted labels
     BATCH_SIZE = 128
-    return MAX_HIGHT, MAX_WIDTH, IMG_FOLDER, LABELS_File, ALPHABETS, MAX_STR_LEN, NUM_OF_CHARACTERS, NUM_OF_TIMESTAMPS, BATCH_SIZE
+    return MAX_HIGHT, MAX_WIDTH, LABELS_File, ALPHABETS, MAX_STR_LEN, NUM_OF_CHARACTERS, NUM_OF_TIMESTAMPS, BATCH_SIZE
 
-MAX_HIGHT, MAX_WIDTH, IMG_FOLDER, LABELS_File, ALPHABETS, MAX_STR_LEN, NUM_OF_CHARACTERS, NUM_OF_TIMESTAMPS, BATCH_SIZE = get_global_var()
+MAX_HIGHT, MAX_WIDTH, LABELS_File, ALPHABETS, MAX_STR_LEN, NUM_OF_CHARACTERS, NUM_OF_TIMESTAMPS, BATCH_SIZE = get_global_var()
 
 
 
@@ -90,13 +89,13 @@ def import_out_label_file(path = LABELS_File):
 #print(keyVal.shape)
 #print(keyVal)
 
-def make_total_path(imgName, path = IMG_FOLDER):
+def make_total_path(imgName, path):
     return path + imgName
 
 
 
 #make total path instead of just image name
-def make_total_path_for_all_image_names(keyVal,path = IMG_FOLDER):
+def make_total_path_for_all_image_names(keyVal,path):
     new_key_val = []
 
     path = np.array([make_total_path(imgName, path) for imgName in keyVal[:,0]])
@@ -184,4 +183,86 @@ def process_single_sample(img_path, labels_padded, len_labels_padded, len_labels
     return {"input_data": img, "input_label": labels_padded, "input_length": len_labels_padded, "label_length":len_labels_not_padded}
 
 
+def process_key_values_into_ctc_requierd_attributes(key_val, debug_info = False):
 
+    key_val = delete_key_values_that_not_in_alphabet(key_val)
+    key_val = delete_key_values_that_have_a_too_long_label(key_val)
+    key_val = delete_key_values_with_too_small_aspect_ratio(key_val)
+
+    # Convert key Value (x = imagePpath y = label) to np array
+    x_all_img_total_path = key_val[:, 0]
+    labels = key_val[:, 1]
+
+    # Convert String to int-Code including padding the int code to max str len
+    labels_padded = np.array([label_to_num(xi) for xi in labels])
+    len_labels_padded = np.array([len(i) for i in labels_padded])
+    len_labels_not_padded = np.array([len(i) for i in labels])
+
+
+    if debug_info:
+        characters = set()
+        for item in labels:
+            for ch in item:
+                characters.add(ch)
+
+        # Sort the characters
+        characters = sorted(characters)
+        print("Characters present: ", str(characters))
+        print("Max anzahl Character in labels:", str(len_labels_not_padded.max()))
+
+    return x_all_img_total_path, labels_padded, len_labels_padded, len_labels_not_padded
+
+def load_key_val_mnist():
+    keyValMNIST = import_json_label_file(path='/mnt/c/dev/datasets/OCR/MNIST_words_cropped/annotations.json')
+    keyValMNIST = make_total_path_for_all_image_names(keyValMNIST,'/mnt/c/dev/datasets/OCR/MNIST_words_cropped/images/')
+    return keyValMNIST
+
+def load_all_key_val():
+    keyValMNIST = load_key_val_mnist()
+
+    keyValch4 = import_txt_csv_label_file(path='/mnt/c/dev/datasets/OCR/ch4_cropped/annotations.txt')
+    keyValch4 = make_total_path_for_all_image_names(keyValch4, '/mnt/c/dev/datasets/OCR/ch4_cropped/images/')
+
+    keyValBd = import_txt_csv_label_file(path='/mnt/c/dev/datasets/OCR/BornDigitalData/annotations.txt')
+    keyValBd = make_total_path_for_all_image_names(keyValBd,'/mnt/c/dev/datasets/OCR/BornDigitalData/images/')
+
+    keyVal100k = import_txt_csv_label_file(path="/mnt/c/dev/datasets/OCR/tr_synth_100K_cropped/annotations.txt")
+    keyVal100k = make_total_path_for_all_image_names(keyVal100k,'/mnt/c/dev/datasets/OCR/tr_synth_100K_cropped/images/')
+
+    keyValIdVehic = import_txt_csv_label_file(path="/mnt/c/dev/datasets/OCR/Ind_vehicle_number/annotations.txt")
+    keyValIdVehic = make_total_path_for_all_image_names(keyValIdVehic,'/mnt/c/dev/datasets/OCR/Ind_vehicle_number/images/')
+
+    keyValSVHN = import_txt_csv_label_file(path="/mnt/c/dev/datasets/OCR/SVHN_EXTRA/annotations.txt")
+    keyValSVHN = make_total_path_for_all_image_names(keyValSVHN, '/mnt/c/dev/datasets/OCR/SVHN_Train/images/')
+
+    return keyValMNIST, keyValch4, keyValBd, keyVal100k, keyValIdVehic, keyValSVHN
+
+def create_tensorflow_train_and_validation_dataset(x_all_img_total_path, labels_padded, len_labels_padded, len_labels_not_padded, split_ratio = 0.8):
+    # Creating tensorflow dataset. Dataset is foreseen for a ctc loss network
+    dataset = tf.data.Dataset.from_tensor_slices(
+        (x_all_img_total_path, labels_padded, len_labels_padded, len_labels_not_padded))
+
+    # Split dataset into training and validation dataset
+    dataset_size = len(x_all_img_total_path)
+    train_size = int(split_ratio * dataset_size)
+    train_dataset = dataset.take(train_size)
+    validation_dataset = dataset.skip(train_size)
+
+    # Apply the process_single_sample function to each item in train and validation dataset
+    # Bewusst erst Dataset erstellt und dann einmal map für train und validation. Da ich nicht weiss wie sich das .Batch auswirkt wenn ich es nur einmal auf den ganzen Datensatz anwende und anschliessend splitte
+    train_dataset = (
+        train_dataset.map(
+            process_single_sample, num_parallel_calls=tf.data.experimental.AUTOTUNE
+        )
+        .batch(BATCH_SIZE)
+        .prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+    )
+
+    validation_dataset = (
+        validation_dataset.map(
+            process_single_sample, num_parallel_calls=tf.data.experimental.AUTOTUNE
+        )
+        .batch(BATCH_SIZE)
+        .prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+    )
+    return train_dataset, validation_dataset
