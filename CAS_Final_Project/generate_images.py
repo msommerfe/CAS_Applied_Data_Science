@@ -12,7 +12,9 @@ if not os.path.exists(output_dir):
 
 # Funktion zum Generieren einer zufälligen 12-stelligen Zahl
 def generate_random_number():
-    return ''.join(random.choices('0123456789', k=12))
+    string1 = ''.join(random.choices('0123456789', k=11))
+    string2 = ''.join(random.choices('0123456789', k=1))
+    return string1 + '-' + string2
 
 
 # Funktion zum Erstellen eines zufälligen Hintergrundes
@@ -62,8 +64,8 @@ def calculate_bounding_box(draw, text, font, start_x, start_y):
 
 for i in range(50):
     # Zufällige Bildgrösse
-    img_width = random.randint(800, 1000)
-    img_height = random.randint(500, 1000)
+    img_width = random.randint(2000, 2001)
+    img_height = random.randint(1000, 1001)
 
     # Neues Bild mit zufälligem Hintergrund erstellen
     img = generate_random_background(img_width, img_height)
@@ -93,10 +95,11 @@ for i in range(50):
     font_size = random.randint(8, 128)
     font = load_font(font_size)
     oldXoffset = 0
+    n = 0
     for char in random_number:
 
         # Zufällige Verschiebung für jede Ziffer in y-Richtung
-        offset_x = random.randint(0, 20)
+        offset_x = random.randint(2, 10)
         offset_y = random.randint(-1, 1)
 
         # Zeichne die Ziffer mit zufälliger y-Verschiebung und Schriftgrösse
@@ -111,7 +114,19 @@ for i in range(50):
 
         # Aktualisiere die x-Position für die nächste Ziffer
         char_width = d.textbbox((0, 0), char, font=font)[2] - d.textbbox((0, 0), char, font=font)[0]
-        current_x += char_width + random.randint(2, 10)  # Zufälliger Abstand zwischen den Ziffern
+
+        if n == 1:
+            randomOffset = random.randint(10, 30)  # Zufälliger Abstand zwischen den Ziffern
+        elif n == 3:
+            randomOffset = random.randint(10, 30)  # Zufälliger Abstand zwischen den Ziffern
+        elif n == 5:
+            randomOffset = random.randint(2, 5)  # Zufälliger Abstand zwischen den Ziffern
+        elif n == 7:
+            randomOffset = random.randint(10, 30)  # Zufälliger Abstand zwischen den Ziffern
+        else:
+            randomOffset = 0
+        current_x += char_width + randomOffset
+        n=n+1
 
         # Überprüfe, ob die nächste Ziffer noch ins Bild passt
         if current_x + char_width > img_width:
