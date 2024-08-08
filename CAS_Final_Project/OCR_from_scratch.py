@@ -16,7 +16,7 @@ keyValMNIST, keyValch4, keyValBd, keyVal100k, keyValIdVehic, keyValSVHN = util.l
 
 
 key_val = np.concatenate((keyValMNIST, keyValBd), axis=0)
-key_val = keyVal100k
+key_val = util.load_key_val_syntEVN()
 
 # preprocessing all images that are in the key_val and convert them into the 4 Vectors required for ctc loss
 x_all_img_total_path, labels_padded, len_labels_padded, len_labels_not_padded = util.process_key_values_into_ctc_requierd_attributes(key_val)

@@ -1,9 +1,12 @@
 import os
 import random
+import csv
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 
 # Erstelle ein Verzeichnis, um die Bilder zu speichern
+filenames = []
+annotations = []
 output_dir = '/mnt/c/dev/git/CAS_Applied_Data_Science/CAS_Final_Project/generated_images'
 
 if not os.path.exists(output_dir):
@@ -14,7 +17,9 @@ if not os.path.exists(output_dir):
 def generate_random_number():
     string1 = ''.join(random.choices('0123456789', k=11))
     string2 = ''.join(random.choices('0123456789', k=1))
-    return string1 + '-' + string2
+    annotation = string1 + '-' + string2
+    annotations.append(annotation)
+    return annotation
 
 
 # Funktion zum Erstellen eines zufälligen Hintergrundes
@@ -62,10 +67,10 @@ def calculate_bounding_box(draw, text, font, start_x, start_y):
 
     return (min_x, min_y, max_x, max_y)
 
-for i in range(50):
+for i in range(20000):
     # Zufällige Bildgrösse
-    img_width = random.randint(2000, 2001)
-    img_height = random.randint(1000, 1001)
+    img_width = 1000 #random.randint(1000, 1001)
+    img_height = 200 #random.randint(150, 151)
 
     # Neues Bild mit zufälligem Hintergrund erstellen
     img = generate_random_background(img_width, img_height)
@@ -138,7 +143,7 @@ for i in range(50):
     img = img.filter(ImageFilter.GaussianBlur(blur_radius))
 
     # Füge einen kleinen Rand hinzu
-    padding = 10
+    padding = random.randint(10, 20)
     bbox = (
     max(0, min_x - padding), max(0, min_y - padding), min(img_width, max_x + padding), min(img_height, max_y + padding))
 
@@ -150,5 +155,10 @@ for i in range(50):
 
     # Bild speichern
     img.save(os.path.join(output_dir, f'image_{i:04d}.png'))
+    filenames.append(f'image_{i:04d}.png')
 
 print("Bilder wurden erfolgreich generiert und gespeichert.")
+with open(os.path.join(output_dir,'annotations.csv'), 'w') as csvfile:
+    writer = csv.writer(csvfile, delimiter= ' ')
+    for n in range(len(filenames)):
+        writer.writerow([str(filenames[n]), str(annotations[n]), ''])

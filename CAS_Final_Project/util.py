@@ -217,6 +217,11 @@ def load_key_val_mnist():
     keyValMNIST = make_total_path_for_all_image_names(keyValMNIST,'/mnt/c/dev/datasets/OCR/MNIST_words_cropped/images/')
     return keyValMNIST
 
+def load_key_val_syntEVN():
+    keyValSyntEVN = import_txt_csv_label_file(path='/mnt/c/dev/datasets/OCR/SyntEVN/annotations.csv')
+    keyValSyntEVN = make_total_path_for_all_image_names(keyValSyntEVN,'/mnt/c/dev/datasets/OCR/SyntEVN/images/')
+    return keyValSyntEVN
+
 def load_all_key_val():
     keyValMNIST = load_key_val_mnist()
 
