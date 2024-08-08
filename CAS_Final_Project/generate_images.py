@@ -63,7 +63,7 @@ def calculate_bounding_box(draw, text, font, start_x, start_y):
 for i in range(50):
     # Zufällige Bildgrösse
     img_width = random.randint(800, 1000)
-    img_height = random.randint(50, 100)
+    img_height = random.randint(500, 1000)
 
     # Neues Bild mit zufälligem Hintergrund erstellen
     img = generate_random_background(img_width, img_height)
@@ -90,7 +90,7 @@ for i in range(50):
 
 
     # Zufällige Schriftgrösse
-    font_size = random.randint(8, 24)
+    font_size = random.randint(8, 128)
     font = load_font(font_size)
     oldXoffset = 0
     for char in random_number:
@@ -123,7 +123,7 @@ for i in range(50):
     img = img.filter(ImageFilter.GaussianBlur(blur_radius))
 
     # Füge einen kleinen Rand hinzu
-    padding = 5
+    padding = 10
     bbox = (
     max(0, min_x - padding), max(0, min_y - padding), min(img_width, max_x + padding), min(img_height, max_y + padding))
 
